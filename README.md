@@ -1,3 +1,3 @@
 # sixtyfive
 
--> https://codingdaaaaaave.github.io/sixtyfive/
+https://codingdaaaaaave.github.io/sixtyfive/
