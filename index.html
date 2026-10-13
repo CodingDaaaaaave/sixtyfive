@@ -122,6 +122,7 @@ html.gross .startbild{width:min(22rem,82%)}
   background:linear-gradient(180deg, rgba(8,18,23,.45) 0%, rgba(8,18,23,.7) 55%, rgba(8,18,23,.88) 100%)}
 @keyframes langsam{from{opacity:0}to{opacity:1}}
 .karte:has(.hintergrund){background:rgba(8,18,23,.55); border-color:rgba(200,164,77,.5)}
+.karte:has(.hintergrund) h2{max-width:none; font-size:1.75rem; color:var(--gold-hell); text-wrap:balance}
 .lueckentext{margin:1.4rem 0 0; padding-top:1.3rem; border-top:1px solid rgba(200,164,77,.28); font-size:1.2rem; line-height:1.85}
 .lueckentext p{margin:0 0 1rem; max-width:none}
 .luecke{color:var(--gold-hell); border-bottom:1px solid rgba(200,164,77,.55)}
@@ -434,13 +435,13 @@ function endeHtml(){
   var hintergrund = '<div class="hintergrund" style="background-image:url('+BILDER[z]+')'
     +(BILDAUSSCHNITT[z] ? '; background-position:'+BILDAUSSCHNITT[z] : '')+'"></div>';
 
-  return hintergrund+'<div><h2>Deine Reise</h2>'
-    +'<p class="leise">Das war kein normales Quiz. Das ist dein Geschenk, und du hast es dir gerade selbst ausgesucht.</p>'
+  return hintergrund+'<div><h2>Diese Reise schenken wir '+(antworten.wer==="allein"||antworten.wer==="jeder" ? "dir" : "euch")+'!</h2>'
+    +'<p class="leise">Du hast sie dir gerade selbst zusammengestellt, vielleicht mit ein bisschen Hilfe deiner lieben Frau.</p>'
     +'<div class="lueckentext">'+text+'</div>'
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
     +'<li>Ein Fahrzeug, falls eins gemietet wird</li><li>Alle Übernachtungen</li><li>Die gebuchten Touren</li>'
     +'</ul><p class="leise" style="margin-top:.8rem">Sprit und Essen bleiben deine Sache. Gebucht wird, sobald Anett weiß, wann sie frei bekommt.</p></div></div>'
-    +'<div class="widmung"><p class="unterschrift">Deine Söhne, deine Mama und deine Brüder</p></div>';
+    +'<div class="widmung"><p class="unterschrift">Von deiner Mama, deinen Brüdern und deinen Söhnen</p></div>';
 }
 
 function entschaerfen(t){
