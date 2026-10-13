@@ -431,8 +431,9 @@ function endeHtml(){
   var bild = HINTERGRUND[antworten.ziel] || BILDER.auftakt;
   var hintergrund = '<div class="hintergrund" style="background-image:url('+bild+')"></div>';
 
-  return hintergrund+'<div><h2>Diese Reise schenken wir '+(antworten.wer==="allein"||antworten.wer==="jeder" ? "dir" : "euch")+'!</h2>'
-    +'<p class="leise">Du hast sie dir gerade selbst zusammengestellt, vielleicht mit ein bisschen Hilfe deiner lieben Frau.</p>'
+  return hintergrund+'<div><h2>Überraschung!</h2>'
+    +'<p class="leise">Das war kein normales Quiz. Du hast dir gerade deine eigene Reise zusammengestellt, und die schenken wir '
+    +(antworten.wer==="allein"||antworten.wer==="jeder" ? "dir" : "euch")+'.</p>'
     +'<div class="lueckentext">'+text+'</div>'
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
     +'<li>Ein Fahrzeug, falls eins gemietet wird</li><li>Alle Übernachtungen</li><li>Die gebuchten Touren</li>'
