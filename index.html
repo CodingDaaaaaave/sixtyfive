@@ -384,46 +384,41 @@ function fussHtml(mitWeiter){
 }
 
 /* ---------------------- Erzählung ---------------------- */
-/* Satzbausteine je Antwort, [du-Form, ihr-Form] wo nötig; eigenes Ziel wird zu "nach …" */
+/* Satzbausteine je Antwort; ##…## wird golden unterstrichen. Eigenes Ziel wird zu "nach …" */
 var SATZ = {
-  ziel:{skandinavien:"nach Skandinavien", sachsen:"ins Elbsandsteingebirge", alpen:"in die Alpen"},
-  jahreszeit:{fruehling:"Im Frühling", sommer:"Im Sommer", herbst:"Im Herbst", winter:"Im Winter"},
-  wer:{allein:"Auf deiner Reise begleitet dich nur ##die Weite##.",
-       frau:"Auf deiner Reise begleitet dich ##deine Frau##.",
-       familie:"Auf deiner Reise begleiten dich ##deine Frau, Freunde und Familie##.",
-       jeder:"Auf deiner Reise begleitet dich ##jeder, der mit möchte##, dazu ##bis zu zwei Freiwillige aus dem Publikum##."},
-  fahrzeug:{auto:"mit dem Auto", wohnmobil:"mit dem Wohnmobil"},
-  schlafen:{sterne:"Geschlafen wird ##unter den Sternen##.", auto:"Geschlafen wird ##gleich im Auto##.",
-            wohnmobil:"Geschlafen wird ##gleich im Wohnmobil##.", bett:"Abends wartet ##ein richtig tolles Bett##."},
+  tempo:{viel:"„Road is my home“", bleiben:"„Ankommen und bleiben“"},
+  jahreszeit:{fruehling:"im Frühling", sommer:"im Sommer", herbst:"im Herbst", winter:"im Winter"},
   dauer:{kurz:"3–4 Tage", woche:"eine Woche", lang:"zwei Wochen"},
-  tempo:{viel:[": ##jeden Abend woanders##, ganz nach dem Motto ##„Road is my home“##", ": ##jeden Abend woanders##, ganz nach dem Motto ##„Road is my home“##"],
-         bleiben:[", für ##ein, zwei Orte##, die du ##richtig kennenlernst##", ", für ##ein, zwei Orte##, die ihr ##richtig kennenlernt##"]},
-  ausmacht:{spontan:["##hältst spontan an##, wo es schön ist", "##haltet spontan an##, wo es schön ist"],
-            entdecken:["##entdeckst so viel wie möglich##", "##entdeckt so viel wie möglich##"],
-            ungewoehnl:["##suchst das Ungewöhnliche##", "##sucht das Ungewöhnliche##"],
-            gemeinsam:["##nimmst dir Zeit für dich##", "##genießt die gemeinsame Zeit##"]},
+  wer:{allein:"ganz allein", frau:"zusammen mit deiner Frau", familie:"zusammen mit deiner Frau, Freunden und Familie",
+       jeder:"zusammen mit allen, die mitwollen, und bis zu zwei Freiwilligen aus dem Publikum"},
+  ziel:{skandinavien:"nach Skandinavien", sachsen:"ins Elbsandsteingebirge", alpen:"in die Alpen"},
+  ausmacht:{spontan:"spontan anhalten und den Moment genießen", entdecken:"möglichst viel entdecken",
+            ungewoehnl:"ungewöhnliche Erlebnisse sammeln", gemeinsam:"viel gemeinsame Zeit verbringen"},
   natur:{nordlicht:"Nordlichter", wasserfall:"gewaltige Wasserfälle", waelder:"unberührte Wälder und Seen", berge:"spektakuläre Berge und Täler"},
-  aktivitaet:{kanu:"##mit dem Kanu einen wilden Fluss## hinunterfahren", wandern:"##durch einsame Natur## wandern",
-              hoehle:"##eine Höhle oder Schlucht## erkunden", expedition:"zu ##einer außergewöhnlichen Expedition## aufbrechen"}
+  schlafen:{sterne:"unter den Sternen", auto:"im Auto", wohnmobil:"im Wohnmobil", bett:"in einem richtig tollen Bett"},
+  aktivitaet:{kanu:"mit dem Kanu einen wilden Fluss hinunterzufahren", wandern:"durch einsame Natur zu wandern",
+              hoehle:"eine Höhle oder Schlucht zu erkunden", expedition:"zu einer außergewöhnlichen Expedition aufzubrechen"}
 };
 
 /* ##…## markiert Papas Antworten; alles andere wird vorher entschärft */
 function markiert(t){ return entschaerfen(t).replace(/##(.*?)##/g, '<span class="luecke">$1</span>'); }
+function L(t){ return "##"+t+"##"; }
+/* "A und B", aber "A sowie B", wenn ein Teil schon ein "und" enthält */
+function und(l){ return l.length<2 ? l[0] : l[0]+(/ und /.test(l.join(" "))?" sowie ":" und ")+l[1]; }
 
 function erzaehlung(){
-  var a=antworten, du=a.wer==="allein", f=du?0:1;
-  var ziel = SATZ.ziel[a.ziel] || "nach "+a.ziel;
-  var fahr = SATZ.fahrzeug[a.schlafen] ? " ##"+SATZ.fahrzeug[a.schlafen]+"##" : "";
-  var tun = a.ausmacht.map(function(x){ return SATZ.ausmacht[x][f]; });
-  var natur = a.natur.map(function(x){ return "##"+SATZ.natur[x]+"##"; });
+  var a=antworten, allein=a.wer==="allein";
+  var tun = a.ausmacht.map(function(x){
+    return L(x==="gemeinsam" && allein ? "dir viel Zeit für dich nehmen" : SATZ.ausmacht[x]); });
+  var natur = a.natur.map(function(x){ return L(SATZ.natur[x]); });
   return [
-    SATZ.wer[a.wer],
-    "##"+SATZ.jahreszeit[a.jahreszeit]+"## "+(du?"fährst du":"fahrt ihr")+fahr+" ##"+ziel+"## und "
-      +(du?"nimmst dir":"nehmt euch")+" ##"+SATZ.dauer[a.dauer]+"## Zeit"+SATZ.tempo[a.tempo][f]+". "+SATZ.schlafen[a.schlafen],
-    (du?"Du ":"Ihr ")+tun[0]+(tun[1] ? (tun[0].indexOf(",")>-1?", und ":" und ")+tun[1] : "")+". "
-      +"Dabei "+(du?"wirst du ":"werdet ihr ")
-      +natur[0]+(natur[1] ? (/ und /.test(natur[0]+natur[1])?" sowie ":" und ")+natur[1] : "")
-      +" erleben und "+SATZ.aktivitaet[a.aktivitaet]+"."
+    "Das Motto deiner Wunschreise ist "+L(SATZ.tempo[a.tempo])+".",
+    "Du reist "+L(SATZ.jahreszeit[a.jahreszeit])+" für "+L(SATZ.dauer[a.dauer])+" "
+      +L(SATZ.wer[a.wer])+" "+L(SATZ.ziel[a.ziel] || "nach "+a.ziel)+".",
+    "Du wirst dabei "+und(tun)+". "
+      +(natur.length>1 ? "Als besondere Highlights erwarten dich " : "Als besonderes Highlight erwarten dich ")+und(natur)+".",
+    "Wir organisieren dir "+(allein?"deine":"eure")+" Übernachtung "+L(SATZ.schlafen[a.schlafen])
+      +" und schlagen dir die besten Orte vor, um "+L(SATZ.aktivitaet[a.aktivitaet])+"."
   ].map(markiert);
 }
 
@@ -442,7 +437,7 @@ function endeHtml(){
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
     +'<li>Ein Fahrzeug, falls eins gemietet wird</li><li>Alle Übernachtungen</li><li>Die gebuchten Touren</li>'
     +'</ul><p class="leise" style="margin-top:.8rem">Sprit und Essen bleiben deine Sache. Gebucht wird, sobald Anett weiß, wann sie frei bekommt.</p></div></div>'
-    +'<div class="widmung"><p class="unterschrift">Von deiner Mama, deinen Brüdern und deinen Söhnen</p></div>';
+    +'<div class="widmung"><p class="unterschrift">Von deiner Mama, deinen Brüdern, deinen Söhnen und ihren Familien</p></div>';
 }
 
 function entschaerfen(t){
