@@ -115,9 +115,14 @@ p{margin:0 0 1rem; max-width:58ch}
 html.gross .startbild{width:min(22rem,82%)}
 
 
-.endebild{display:block; width:100%; height:9rem; object-fit:cover; margin:0 0 1.6rem;
-  filter:saturate(.9) brightness(.8)}
-.lueckentext{margin:1.4rem 0 0; padding-top:1.3rem; border-top:1px solid rgba(200,164,77,.28); font-size:1.12rem; line-height:1.9}
+/* Endseite: Zielfoto bildschirmfüllend hinter der Karte */
+.hintergrund{position:fixed; inset:0; z-index:-1; background-size:cover; background-position:center;
+  animation:langsam 2.2s backwards}
+.hintergrund::after{content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(8,18,23,.45) 0%, rgba(8,18,23,.7) 55%, rgba(8,18,23,.88) 100%)}
+@keyframes langsam{from{opacity:0}to{opacity:1}}
+.karte:has(.hintergrund){background:rgba(8,18,23,.55); border-color:rgba(200,164,77,.5)}
+.lueckentext{margin:1.4rem 0 0; padding-top:1.3rem; border-top:1px solid rgba(200,164,77,.28); font-size:1.2rem; line-height:1.85}
 .lueckentext p{margin:0 0 1rem; max-width:none}
 .luecke{color:var(--gold-hell); border-bottom:1px solid rgba(200,164,77,.55)}
 @keyframes auftauchen{from{opacity:0; transform:translateY(7px)}to{opacity:1; transform:none}}
@@ -142,10 +147,10 @@ html.gross .zahl{font-size:6rem}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 @media print{
-  .himmel,.fussleiste,.fortschritt,.schalter{display:none !important}
+  .himmel,.hintergrund,.fussleiste,.fortschritt,.schalter{display:none !important}
   body{background:#fff; color:#1A1208}
   .blatt{min-height:0; padding:0; display:block; max-width:none}
-  .karte{border:1px solid #A8873C; padding:2rem; background:none}
+  .karte,.karte:has(.hintergrund){border:1px solid #A8873C; padding:2rem; background:none}
   .unterschrift{color:#8A6A1E}
   .lueckentext{border-top:1px solid #A8873C} .lueckentext p{animation:none}
   .luecke{color:#8A6A1E; border-bottom-color:#C9B07A}
@@ -375,48 +380,61 @@ function fussHtml(mitWeiter){
   return h+'</div>';
 }
 
-/* ---------------------- Lückentext ---------------------- */
-/* Satzbausteine je Antwort; eigenes Ziel wird zu "nach …" */
+/* ---------------------- Erzählung ---------------------- */
+/* Satzbausteine je Antwort, [du-Form, ihr-Form] wo nötig; eigenes Ziel wird zu "nach …" */
 var SATZ = {
   ziel:{skandinavien:"nach Skandinavien", sachsen:"ins Elbsandsteingebirge", alpen:"in die Alpen"},
   jahreszeit:{fruehling:"Im Frühling", sommer:"Im Sommer", herbst:"Im Herbst", winter:"Im Winter"},
-  wer:{allein:"ganz für dich allein", frau:"zusammen mit deiner Frau", familie:"mit deiner Frau und Freunden oder Familie",
-       jeder:"mit allen, die mitwollen, plus bis zu zwei Freiwilligen aus dem Publikum"},
-  schlafen:{sterne:"unter den Sternen", auto:"im Auto", wohnmobil:"im Wohnmobil", bett:"in einem richtig tollen Bett"},
+  wer:{allein:"Auf deiner Reise begleitet dich nur ##die Weite##.",
+       frau:"Auf deiner Reise begleitet dich ##deine Frau##.",
+       familie:"Auf deiner Reise begleiten dich ##deine Frau, Freunde und Familie##.",
+       jeder:"Auf deiner Reise begleitet dich ##jeder, der mit möchte##, dazu ##bis zu zwei Freiwillige aus dem Publikum##."},
+  fahrzeug:{auto:"mit dem Auto", wohnmobil:"mit dem Wohnmobil"},
+  schlafen:{sterne:"Geschlafen wird ##unter den Sternen##.", auto:"Geschlafen wird ##gleich im Auto##.",
+            wohnmobil:"Geschlafen wird ##gleich im Wohnmobil##.", bett:"Abends wartet ##ein richtig tolles Bett##."},
   dauer:{kurz:"3–4 Tage", woche:"eine Woche", lang:"zwei Wochen"},
-  ausmacht:{spontan:"spontan anhalten und den Moment genießen", entdecken:"möglichst viel entdecken",
-            ungewoehnl:"ungewöhnliche Erlebnisse", gemeinsam:"gemeinsame Zeit"},
+  tempo:{viel:[": ##jeden Abend woanders##, ganz nach dem Motto ##„Road is my home“##", ": ##jeden Abend woanders##, ganz nach dem Motto ##„Road is my home“##"],
+         bleiben:[", für ##ein, zwei Orte##, die du ##richtig kennenlernst##", ", für ##ein, zwei Orte##, die ihr ##richtig kennenlernt##"]},
+  ausmacht:{spontan:["##hältst spontan an##, wo es schön ist", "##haltet spontan an##, wo es schön ist"],
+            entdecken:["##entdeckst so viel wie möglich##", "##entdeckt so viel wie möglich##"],
+            ungewoehnl:["##suchst das Ungewöhnliche##", "##sucht das Ungewöhnliche##"],
+            gemeinsam:["##nimmst dir Zeit für dich##", "##genießt die gemeinsame Zeit##"]},
   natur:{nordlicht:"Nordlichter", wasserfall:"gewaltige Wasserfälle", waelder:"unberührte Wälder und Seen", berge:"spektakuläre Berge und Täler"},
-  aktivitaet:{kanu:"eine Kanutour auf einem wilden Fluss", wandern:"eine Wanderung durch einsame Natur",
-              hoehle:"eine Tour durch eine Höhle oder Schlucht", expedition:"eine außergewöhnliche Expedition"}
+  aktivitaet:{kanu:"##mit dem Kanu einen wilden Fluss## hinunterfahren", wandern:"##durch einsame Natur## wandern",
+              hoehle:"##eine Höhle oder Schlucht## erkunden", expedition:"zu ##einer außergewöhnlichen Expedition## aufbrechen"}
 };
-function luecke(t){ return '<span class="luecke">'+entschaerfen(t)+'</span>'; }
-function und(l){ return l.length>1 ? l.slice(0,-1).join(", ")+" und "+l[l.length-1] : l[0]; }
 
-function lueckentext(){
-  var a=antworten, du=a.wer==="allein";
-  var tempo = a.tempo==="viel"
-    ? "Das Motto: "+luecke("Road is my home")+". Viel sehen, viel erleben, jeden Abend woanders."
-    : "Das Motto: "+luecke("Ankommen und bleiben")+". Ein, zwei Orte, die "+(du?"du richtig kennenlernst":"ihr richtig kennenlernt")+".";
+/* ##…## markiert Papas Antworten; alles andere wird vorher entschärft */
+function markiert(t){ return entschaerfen(t).replace(/##(.*?)##/g, '<span class="luecke">$1</span>'); }
+
+function erzaehlung(){
+  var a=antworten, du=a.wer==="allein", f=du?0:1;
+  var ziel = SATZ.ziel[a.ziel] || "nach "+a.ziel;
+  var fahr = SATZ.fahrzeug[a.schlafen] ? " ##"+SATZ.fahrzeug[a.schlafen]+"##" : "";
+  var tun = a.ausmacht.map(function(x){ return SATZ.ausmacht[x][f]; });
+  var natur = a.natur.map(function(x){ return "##"+SATZ.natur[x]+"##"; });
   return [
-    luecke(SATZ.jahreszeit[a.jahreszeit])+" geht es "+luecke(SATZ.ziel[a.ziel] || "nach "+a.ziel)+", "+luecke(SATZ.wer[a.wer])+".",
-    "Geschlafen wird "+luecke(SATZ.schlafen[a.schlafen])+". "+(du?"Du nimmst dir ":"Ihr nehmt euch ")+luecke(SATZ.dauer[a.dauer])+" Zeit. "+tempo,
-    "Was zählt: "+und(a.ausmacht.map(function(x){ return luecke(SATZ.ausmacht[x]); }))+". "
-      +"Unterwegs warten "+und(a.natur.map(function(x){ return luecke(SATZ.natur[x]); }))
-      +", und "+luecke(SATZ.aktivitaet[a.aktivitaet])+" ist fest eingeplant."
-  ];
+    SATZ.wer[a.wer],
+    "##"+SATZ.jahreszeit[a.jahreszeit]+"## "+(du?"fährst du":"fahrt ihr")+fahr+" ##"+ziel+"## und "
+      +(du?"nimmst dir":"nehmt euch")+" ##"+SATZ.dauer[a.dauer]+"## Zeit"+SATZ.tempo[a.tempo][f]+". "+SATZ.schlafen[a.schlafen],
+    (du?"Du ":"Ihr ")+tun[0]+(tun[1] ? (tun[0].indexOf(",")>-1?", und ":" und ")+tun[1] : "")+". "
+      +"Dabei "+(du?"wirst du ":"werdet ihr ")
+      +natur[0]+(natur[1] ? (/ und /.test(natur[0]+natur[1])?" sowie ":" und ")+natur[1] : "")
+      +" erleben und "+SATZ.aktivitaet[a.aktivitaet]+"."
+  ].map(markiert);
 }
 
 function endeHtml(){
-  var absaetze = lueckentext(), text="";
+  var absaetze = erzaehlung(), text="";
   for(var i=0;i<absaetze.length;i++)
-    text += '<p style="animation-delay:'+(i*0.5)+'s">'+absaetze[i]+'</p>';
+    text += '<p style="animation-delay:'+(0.6+i*0.6)+'s">'+absaetze[i]+'</p>';
 
-  var zpos = BILDAUSSCHNITT[antworten.ziel] ? ' style="object-position:'+BILDAUSSCHNITT[antworten.ziel]+'"' : '';
-  var zielbild = BILDER[antworten.ziel] && antworten.ziel!=="auftakt"
-    ? '<img class="endebild" src="'+BILDER[antworten.ziel]+'"'+zpos+' alt="">' : '';
+  /* Zielfoto als Hintergrund; eigenes Ziel bekommt das Startfoto */
+  var z = BILDER[antworten.ziel] && antworten.ziel!=="auftakt" ? antworten.ziel : "auftakt";
+  var hintergrund = '<div class="hintergrund" style="background-image:url('+BILDER[z]+')'
+    +(BILDAUSSCHNITT[z] ? '; background-position:'+BILDAUSSCHNITT[z] : '')+'"></div>';
 
-  return '<div>'+zielbild+'<h2>Deine Reise</h2>'
+  return hintergrund+'<div><h2>Deine Reise</h2>'
     +'<p class="leise">Das war kein normales Quiz. Das ist dein Geschenk, und du hast es dir gerade selbst ausgesucht.</p>'
     +'<div class="lueckentext">'+text+'</div>'
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
