@@ -321,14 +321,14 @@ function zeichne(){
 }
 
 function auftaktHtml(){
-  var titel = "Alles Gute zum 65.!";
-  var text  = "Wir haben was mit dir vor. Aber erst ein kleines Quiz. Es gibt keine falschen Antworten.";
+  var titel = "Alles Gute zum Geburtstag, Papa!";
+  var text  = "Ein kleines Quiz, und am Ende wartet eine Überraschung.";
   var bild = BILDER.auftakt ? '<img class="startbild" src="'+BILDER.auftakt+'" alt="">' : '';
   return '<div class="auftakt">'+bild+'<p class="zahl">65</p>'
     +'<div class="zierlinie"><span></span>'
     +'<svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 0l1.8 5.2L14 7l-5.2 1.8L7 14l-1.8-5.2L0 7l5.2-1.8z" fill="#C8A44D"/></svg>'
     +'<span></span></div><h1>'+titel+'</h1><p>'+text+'</p>'
-    +'<div class="fussleiste"><button class="knopf" data-los>Anfangen</button></div></div>';
+    +'<div class="fussleiste"><button class="knopf" data-los>Los geht\'s</button></div></div>';
 }
 
 function frageHtml(s){
