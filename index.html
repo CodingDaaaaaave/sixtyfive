@@ -117,13 +117,11 @@ html.gross .startbild{width:min(22rem,82%)}
 
 .endebild{display:block; width:100%; height:9rem; object-fit:cover; margin:0 0 1.6rem;
   filter:saturate(.9) brightness(.8)}
-.zeilen{margin:1.4rem 0 0; border-top:1px solid rgba(200,164,77,.28)}
-.zeile{display:flex; gap:1.1rem; align-items:baseline; justify-content:space-between;
-  padding:.75rem .2rem; border-bottom:1px solid rgba(244,239,228,.12)}
-.zeile dt{color:#A9B8C0; font-size:.78rem; letter-spacing:.04em; flex:0 0 auto}
-.zeile dd{margin:0; text-align:right; font-size:1.02rem}
+.lueckentext{margin:1.4rem 0 0; padding-top:1.3rem; border-top:1px solid rgba(200,164,77,.28); font-size:1.12rem; line-height:1.9}
+.lueckentext p{margin:0 0 1rem; max-width:none}
+.luecke{color:var(--gold-hell); border-bottom:1px solid rgba(200,164,77,.55)}
 @keyframes auftauchen{from{opacity:0; transform:translateY(7px)}to{opacity:1; transform:none}}
-.zeile{animation:auftauchen .5s backwards}
+.lueckentext p{animation:auftauchen .7s backwards}
 .widmung{margin-top:2.6rem; text-align:center}
 .widmung p{margin-left:auto; margin-right:auto; max-width:none}
 .unterschrift{font-size:1.45rem; line-height:1.3; font-style:italic; color:var(--gold-hell); margin-bottom:0; text-wrap:balance}
@@ -141,7 +139,6 @@ html.gross .zahl{font-size:6rem}
 @media (max-width:560px){
   html{font-size:17px}
   .wahl{gap:.7rem} .aufdruck{padding:0 1rem}
-  .zeile{flex-direction:column; gap:.05rem} .zeile dd{text-align:left}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 @media print{
@@ -150,9 +147,8 @@ html.gross .zahl{font-size:6rem}
   .blatt{min-height:0; padding:0; display:block; max-width:none}
   .karte{border:1px solid #A8873C; padding:2rem; background:none}
   .unterschrift{color:#8A6A1E}
-  .zeile{animation:none; border-bottom:1px solid #D8CDB2}
-  .zeile dt{color:#6B5A38} .zeile dd{color:#1A1208}
-  .zeilen{border-top:1px solid #A8873C}
+  .lueckentext{border-top:1px solid #A8873C} .lueckentext p{animation:none}
+  .luecke{color:#8A6A1E; border-bottom-color:#C9B07A}
   .nurdruck{display:block; border-top:1px solid #A8873C; padding-top:1.2rem; margin-top:1.8rem}
   .nurdruck ul{margin:.5rem 0 0; padding-left:1.1rem}
   .nurdruck li{margin-bottom:.3rem}
@@ -208,13 +204,13 @@ var G = {
 };
 
 /* ==================================================================
-   FRAGEN   ("kurz" = Beschriftung auf der Endseite)
+   FRAGEN
 ================================================================== */
 var SCHIRME = [
 
 { id:"auftakt", art:"auftakt" },
 
-{ id:"ziel", art:"bildwahl", kurz:"Ziel",
+{ id:"ziel", art:"bildwahl",
   frage:"Bei welchem dieser Orte denkst du an Urlaub?",
   platzhalter:"Oder eigenes Ziel eintippen …",
   optionen:[
@@ -223,7 +219,7 @@ var SCHIRME = [
     {id:"alpen",        titel:"Die Alpen",            unter:"Berge, Hütten und Gipfel",       bild:BILD_ALPEN}
   ]},
 
-{ id:"jahreszeit", art:"frage", kurz:"Jahreszeit",
+{ id:"jahreszeit", art:"frage",
   frage:"Wann wäre dort für dich die schönste Zeit?",
   optionen:[
     {id:"fruehling", titel:"Frühling"},
@@ -232,7 +228,7 @@ var SCHIRME = [
     {id:"winter",    titel:"Winter"}
   ]},
 
-{ id:"wer", art:"frage", kurz:"Mit",
+{ id:"wer", art:"frage",
   frage:"Mit wem gehst du am liebsten auf Reisen?",
   optionen:[
     {id:"allein",  titel:"Allein"},
@@ -241,7 +237,7 @@ var SCHIRME = [
     {id:"jeder",   titel:"Jeder, der mit möchte!", unter:"bis zu 2 Freiwillige aus dem Publikum"}
   ]},
 
-{ id:"schlafen", art:"frage", kurz:"Übernachtung",
+{ id:"schlafen", art:"frage",
   frage:"Wo schläfst du am liebsten?",
   optionen:[
     {id:"sterne",    titel:"Unter den Sternen"},
@@ -250,14 +246,14 @@ var SCHIRME = [
     {id:"bett",      titel:"In einem richtig tollen Bett"}
   ]},
 
-{ id:"tempo", art:"frage", kurz:"Tempo",
+{ id:"tempo", art:"frage",
   frage:"Welches Tempo soll die Reise haben?",
   optionen:[
     {id:"viel",    titel:"„Road is my home“", unter:"viel sehen, viel erleben, jeden Abend woanders", bild:G.viel},
     {id:"bleiben", titel:"„Ankommen und bleiben“", unter:"1–2 Orte auswählen und diese richtig kennenlernen", bild:G.bleiben}
   ]},
 
-{ id:"dauer", art:"frage", kurz:"Dauer",
+{ id:"dauer", art:"frage",
   frage:"Wie lange sollte ein richtig gutes Abenteuer dauern?",
   optionen:[
     {id:"kurz",  titel:"3-4 Tage reichen", bild:G.kurz},
@@ -265,7 +261,7 @@ var SCHIRME = [
     {id:"lang",  titel:"Es dürfen gerne 2 Wochen sein", bild:G.lang}
   ]},
 
-{ id:"ausmacht", art:"mehrfach", max:2, kurz:"Gute Reise",
+{ id:"ausmacht", art:"mehrfach", max:2,
   frage:"Was macht eine richtig gute Reise aus?",
   hinweis:"1–2 Antworten möglich",
   optionen:[
@@ -275,7 +271,7 @@ var SCHIRME = [
     {id:"gemeinsam",   titel:"Gemeinsame Zeit verbringen."}
   ]},
 
-{ id:"natur", art:"mehrfach", max:2, kurz:"Natur",
+{ id:"natur", art:"mehrfach", max:2,
   frage:"Welches Naturerlebnis würdest du gerne sehen?",
   hinweis:"1–2 Antworten möglich",
   optionen:[
@@ -285,7 +281,7 @@ var SCHIRME = [
     {id:"berge",       titel:"Spektakuläre Berge und Täler"}
   ]},
 
-{ id:"aktivitaet", art:"frage", kurz:"Aktivität",
+{ id:"aktivitaet", art:"frage",
   frage:"Was wäre eine richtig coole Aktivität?",
   optionen:[
     {id:"kanu",       titel:"Kanutour auf einem wilden Fluss"},
@@ -379,28 +375,42 @@ function fussHtml(mitWeiter){
   return h+'</div>';
 }
 
-/* ---------------------- Zusammenfassung ---------------------- */
-function beschriftung(s, wertId){
-  for(var k=0;k<s.optionen.length;k++) if(s.optionen[k].id===wertId) return s.optionen[k].titel;
-  return wertId;   /* eigenes Ziel */
-}
+/* ---------------------- Lückentext ---------------------- */
+/* Satzbausteine je Antwort; eigenes Ziel wird zu "nach …" */
+var SATZ = {
+  ziel:{skandinavien:"nach Skandinavien", sachsen:"ins Elbsandsteingebirge", alpen:"in die Alpen"},
+  jahreszeit:{fruehling:"Im Frühling", sommer:"Im Sommer", herbst:"Im Herbst", winter:"Im Winter"},
+  wer:{allein:"ganz für dich allein", frau:"zusammen mit deiner Frau", familie:"mit deiner Frau und Freunden oder Familie",
+       jeder:"mit allen, die mitwollen, plus bis zu zwei Freiwilligen aus dem Publikum"},
+  schlafen:{sterne:"unter den Sternen", auto:"im Auto", wohnmobil:"im Wohnmobil", bett:"in einem richtig tollen Bett"},
+  dauer:{kurz:"3–4 Tage", woche:"eine Woche", lang:"zwei Wochen"},
+  ausmacht:{spontan:"spontan anhalten und den Moment genießen", entdecken:"möglichst viel entdecken",
+            ungewoehnl:"ungewöhnliche Erlebnisse", gemeinsam:"gemeinsame Zeit"},
+  natur:{nordlicht:"Nordlichter", wasserfall:"gewaltige Wasserfälle", waelder:"unberührte Wälder und Seen", berge:"spektakuläre Berge und Täler"},
+  aktivitaet:{kanu:"eine Kanutour auf einem wilden Fluss", wandern:"eine Wanderung durch einsame Natur",
+              hoehle:"eine Tour durch eine Höhle oder Schlucht", expedition:"eine außergewöhnliche Expedition"}
+};
+function luecke(t){ return '<span class="luecke">'+entschaerfen(t)+'</span>'; }
+function und(l){ return l.length>1 ? l.slice(0,-1).join(", ")+" und "+l[l.length-1] : l[0]; }
 
-function zeilenListe(){
-  var liste=[];
-  for(var i=0;i<SCHIRME.length;i++){
-    var s=SCHIRME[i], a=antworten[s.id];
-    if(!s.kurz || a===undefined) continue;
-    var werte = [].concat(a).map(function(w){ return beschriftung(s, w); });
-    liste.push([s.kurz, werte.join(" · ")]);
-  }
-  return liste;
+function lueckentext(){
+  var a=antworten, du=a.wer==="allein";
+  var tempo = a.tempo==="viel"
+    ? "Das Motto: "+luecke("Road is my home")+". Viel sehen, viel erleben, jeden Abend woanders."
+    : "Das Motto: "+luecke("Ankommen und bleiben")+". Ein, zwei Orte, die "+(du?"du richtig kennenlernst":"ihr richtig kennenlernt")+".";
+  return [
+    luecke(SATZ.jahreszeit[a.jahreszeit])+" geht es "+luecke(SATZ.ziel[a.ziel] || "nach "+a.ziel)+", "+luecke(SATZ.wer[a.wer])+".",
+    "Geschlafen wird "+luecke(SATZ.schlafen[a.schlafen])+". "+(du?"Du nimmst dir ":"Ihr nehmt euch ")+luecke(SATZ.dauer[a.dauer])+" Zeit. "+tempo,
+    "Was zählt: "+und(a.ausmacht.map(function(x){ return luecke(SATZ.ausmacht[x]); }))+". "
+      +"Unterwegs warten "+und(a.natur.map(function(x){ return luecke(SATZ.natur[x]); }))
+      +", und "+luecke(SATZ.aktivitaet[a.aktivitaet])+" ist fest eingeplant."
+  ];
 }
 
 function endeHtml(){
-  var liste = zeilenListe(), zeilen="";
-  for(var i=0;i<liste.length;i++)
-    zeilen += '<div class="zeile" style="animation-delay:'+(i*0.14)+'s">'
-      +'<dt>'+liste[i][0]+'</dt><dd>'+entschaerfen(liste[i][1])+'</dd></div>';
+  var absaetze = lueckentext(), text="";
+  for(var i=0;i<absaetze.length;i++)
+    text += '<p style="animation-delay:'+(i*0.5)+'s">'+absaetze[i]+'</p>';
 
   var zpos = BILDAUSSCHNITT[antworten.ziel] ? ' style="object-position:'+BILDAUSSCHNITT[antworten.ziel]+'"' : '';
   var zielbild = BILDER[antworten.ziel] && antworten.ziel!=="auftakt"
@@ -408,7 +418,7 @@ function endeHtml(){
 
   return '<div>'+zielbild+'<h2>Deine Reise</h2>'
     +'<p class="leise">Das war kein normales Quiz. Das ist dein Geschenk, und du hast es dir gerade selbst ausgesucht.</p>'
-    +'<div class="zeilen">'+zeilen+'</div>'
+    +'<div class="lueckentext">'+text+'</div>'
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
     +'<li>Ein Fahrzeug, falls eins gemietet wird</li><li>Alle Übernachtungen</li><li>Die gebuchten Touren</li>'
     +'</ul><p class="leise" style="margin-top:.8rem">Sprit und Essen bleiben deine Sache. Gebucht wird, sobald Anett weiß, wann sie frei bekommt.</p></div></div>'
