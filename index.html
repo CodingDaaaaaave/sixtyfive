@@ -149,11 +149,16 @@ html.gross .zahl{font-size:6rem}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none !important; transition:none !important}}
 @media print{
+  /* Gutschein muss auf ein A4-Blatt passen */
+  @page{margin:14mm}
+  html,html.gross{font-size:15px}
+  .lueckentext{line-height:1.65} .lueckentext p{margin-bottom:.8rem}
+  .widmung{margin-top:1.6rem; break-inside:avoid}
   .himmel,.hintergrund,.fussleiste,.fortschritt,.schalter{display:none !important}
   body{background:#fff; color:#1A1208}
   .blatt{min-height:0; padding:0; display:block; max-width:none}
   .karte,.karte:has(.hintergrund){border:1px solid #A8873C; padding:2rem; background:none}
-  .unterschrift{color:#8A6A1E} .unterzeile{color:#1A1208}
+  .unterschrift,.karte:has(.hintergrund) h2{color:#8A6A1E} .unterzeile{color:#1A1208}
   .lueckentext{border-top:1px solid #A8873C} .lueckentext p{animation:none}
   .luecke{color:#8A6A1E; border-bottom-color:#C9B07A}
   .nurdruck{display:block; border-top:1px solid #A8873C; padding-top:1.2rem; margin-top:1.8rem}
