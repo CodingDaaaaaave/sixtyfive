@@ -123,6 +123,7 @@ html.gross .startbild{width:min(22rem,82%)}
 @keyframes langsam{from{opacity:0}to{opacity:1}}
 .karte:has(.hintergrund){background:rgba(8,18,23,.55); border-color:rgba(200,164,77,.5)}
 .karte:has(.hintergrund) h2{max-width:none; font-size:1.75rem; color:var(--gold-hell); text-wrap:balance}
+.unterzeile{font-size:1.15rem; line-height:1.6; color:var(--elfenbein); max-width:none; margin-top:.5rem; text-wrap:pretty}
 .lueckentext{margin:1.4rem 0 0; padding-top:1.3rem; border-top:1px solid rgba(200,164,77,.28); font-size:1.2rem; line-height:1.85}
 .lueckentext p{margin:0 0 1rem; max-width:none}
 .luecke{color:var(--gold-hell); border-bottom:1px solid rgba(200,164,77,.55)}
@@ -152,7 +153,7 @@ html.gross .zahl{font-size:6rem}
   body{background:#fff; color:#1A1208}
   .blatt{min-height:0; padding:0; display:block; max-width:none}
   .karte,.karte:has(.hintergrund){border:1px solid #A8873C; padding:2rem; background:none}
-  .unterschrift{color:#8A6A1E}
+  .unterschrift{color:#8A6A1E} .unterzeile{color:#1A1208}
   .lueckentext{border-top:1px solid #A8873C} .lueckentext p{animation:none}
   .luecke{color:#8A6A1E; border-bottom-color:#C9B07A}
   .nurdruck{display:block; border-top:1px solid #A8873C; padding-top:1.2rem; margin-top:1.8rem}
@@ -432,7 +433,7 @@ function endeHtml(){
   var hintergrund = '<div class="hintergrund" style="background-image:url('+bild+')"></div>';
 
   return hintergrund+'<div><h2>Überraschung!</h2>'
-    +'<p class="leise">Das war kein normales Quiz. Du hast dir gerade deine eigene Reise zusammengestellt, und die schenken wir '
+    +'<p class="unterzeile">Das war kein normales Quiz. Du hast dir gerade deine eigene Reise zusammengestellt, und die schenken wir '
     +(antworten.wer==="allein"||antworten.wer==="jeder" ? "dir" : "euch")+'.</p>'
     +'<div class="lueckentext">'+text+'</div>'
     +'<div class="nurdruck"><strong>Was wir übernehmen</strong><ul>'
